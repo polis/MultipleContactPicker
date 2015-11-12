@@ -1,5 +1,8 @@
 package com.photojoints.multiplecontactpicker;
 
+import android.content.res.Resources;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +32,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         public ViewHolder(View v) {
             super(v);
 
-
             nameView = (TextView) v.findViewById(R.id.contact_name);
             emailView = (TextView) v.findViewById(R.id.contact_email);
             pictureView = (ImageView) v.findViewById(R.id.contact_picture);
-
 
         }
     }
@@ -53,6 +54,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         // set the view's size, margins, paddings and layout parameters
 
 
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
 
         ViewHolder vh = new ViewHolder(v);
         return vh;
@@ -66,7 +73,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         holder.nameView.setText(contacts.get(position).getName());
         holder.emailView.setText(contacts.get(position).getEmail());
-        holder.pictureView.setImageBitmap(contacts.get(position).getPicture());
+
+        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(Resources.getSystem(), contacts.get(position).getPicture());
+        drawable.setCircular(true);
+
+        holder.pictureView.setImageDrawable(drawable);
+
 
     }
 

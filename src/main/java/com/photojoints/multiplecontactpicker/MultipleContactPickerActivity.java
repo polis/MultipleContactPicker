@@ -1,13 +1,14 @@
 package com.photojoints.multiplecontactpicker;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.Contacts;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,49 +19,84 @@ import java.util.ArrayList;
 public class MultipleContactPickerActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    public ArrayList<Contact> contacts = new ArrayList<Contact>();
+
     private RecyclerView contactsView;
     private RecyclerView.Adapter contactsAdapter;
     private RecyclerView.LayoutManager contactsLayoutManager;
 
     private static final String[] PROJECTION =
             {
-//                    ContactsContract.CommonDataKinds.Photo.DISPLAY_NAME_PRIMARY,
-////                    ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME,
-////                    Contacts.DISPLAY_NAME_PRIMARY,
-//                    ContactsContract.CommonDataKinds.Email.ADDRESS,
-//                    ContactsContract.CommonDataKinds.Photo.PHOTO
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.Contacts.PHOTO_ID,
+                ContactsContract.CommonDataKinds.Email.DATA,
 
-                    Contacts._ID,
-                    Contacts.DISPLAY_NAME,
-                    Contacts.CONTACT_STATUS,
-                    Contacts.CONTACT_PRESENCE,
-                    Contacts.PHOTO_ID,
-                    Contacts.LOOKUP_KEY,
             };
 
-    private static final String SORT_ORDER = Contacts.DISPLAY_NAME;
+    private static final String FILTER = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
 
-    /*
- * Constructs search criteria from the search string
- * and email MIME type
- */
-//    private static final String SELECTION =
-//            /*
-//             * Searches for an email address
-//             * that matches the search string
-//             */
-//            ContactsContract.CommonDataKinds.Email.ADDRESS + " LIKE ? " + "AND " +
-//            /*
-//             * Searches for a MIME type that matches
-//             * the value of the constant
-//             * Email.CONTENT_ITEM_TYPE. Note the
-//             * single quotes surrounding Email.CONTENT_ITEM_TYPE.
-//             */
-//                    Data.MIMETYPE + " = '" + Email.CONTENT_ITEM_TYPE + "'";
+    private static final String SORT_ORDER = "CASE WHEN "
+            + ContactsContract.Contacts.DISPLAY_NAME
+            + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
+            + ContactsContract.Contacts.DISPLAY_NAME
+            + ", "
+            + ContactsContract.CommonDataKinds.Email.DATA
+            + " COLLATE NOCASE";
+
+    private Bitmap getPhotoById(int id){
+
+        Bitmap bitmapPhoto = null;
+        byte[] photo = null;
+
+        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, id);
+        Cursor cursorPhoto = getContentResolver().query(photoUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
+
+        try
+        {
+            if (cursorPhoto.moveToFirst())
+                photo = cursorPhoto.getBlob(0);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+
+        } finally {
+
+            cursorPhoto.close();
+        }
+
+        if (photo != null) {
+            bitmapPhoto = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+//                    Log.d("!!!!!!!!!!!!!!!PICTURE!!!!!!!!!!", "!!!!!!!!!!!!!!!!");
+        }
+
+        return bitmapPhoto;
+    }
+
+    private ArrayList<Contact> contactsFromCursor(Cursor cursor) {
+        ArrayList<Contact> c = new ArrayList<Contact>();
 
 
-    public ArrayList<Contact> contacts = new ArrayList<Contact>();
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
 
+            do {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String email = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                int id = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
+
+                if (email != null) {
+                    c.add(new Contact(name, email, getPhotoById(id)));
+                    Log.d("Name: ", name);
+                    Log.d("email: ", email);
+
+                }
+
+            } while (cursor.moveToNext());
+        }
+
+        return c;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +120,6 @@ public class MultipleContactPickerActivity extends AppCompatActivity implements
         contactsAdapter = new ContactsAdapter(contacts);
         contactsView.setAdapter(contactsAdapter);
 
-
     }
 
     @Override
@@ -97,45 +132,16 @@ public class MultipleContactPickerActivity extends AppCompatActivity implements
         // Starts the query
         return new CursorLoader(
                 this,
-                ContactsContract.Data.CONTENT_URI,
+                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 PROJECTION,
+                FILTER,
                 null,
-                null,
-                null
+                SORT_ORDER
         );
     }
 
-    private ArrayList<Contact> contactsFromCursor(Cursor cursor) {
-        ArrayList<Contact> c = new ArrayList<Contact>();
 
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
 
-            do {
-
-                String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
-
-                String email = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-                Bitmap photo = null;
-
-                byte[] data = cursor.getBlob(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO));
-                if (data != null) {
-                    photo = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    Log.d("!!!!!!!!!!!!!!!PICTURE!!!!!!!!!!", "!!!!!!!!!!!!!!!!");
-                    }
-
-                if (email != null) {
-                    c.add(new Contact(name, email, photo));
-                    Log.d("Name: ", name);
-                    Log.d("email: ", email);
-
-                }
-
-            } while (cursor.moveToNext());
-        }
-
-        return c;
-    }
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor cursor) {
