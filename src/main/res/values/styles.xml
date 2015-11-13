@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat">
+    <!--style name="AppTheme" parent="Base.Widget.AppCompat.ActionBar"-->
+
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorAccent">#ff1c7aab</item>
+
+
+        <item name="android:textColorPrimary">#FF7474</item>
+
+        <item name ="actionBarStyle">@style/ActionBarStyle</item>
+
+    </style>
+
+    <style name="ActionBarStyle" parent="@style/Base.Widget.AppCompat.ActionBar">
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetEnd">0dp</item>
+    </style>
+
+
+</resources>
