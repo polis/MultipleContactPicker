@@ -7,9 +7,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
 
-
         >
-        <activity android:name=".MultipleContactPickerActivity" >
+
+        <activity
+            android:name=".MultipleContactPickerActivity"
+            android:theme="@style/ContactPickerTheme"
+            >
+
         </activity>
     </application>
 

@@ -1,25 +1,38 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
-    <!--style name="AppTheme" parent="Base.Widget.AppCompat.ActionBar"-->
+    <style name="ContactPickerTheme" parent="Theme.AppCompat">
 
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@android:color/transparent</item>
-        <item name="colorAccent">#ff1c7aab</item>
+        <item name="actionBarStyle">@style/ContactPickerTheme.ActionBarStyle</item>
+        <!--item name="android:actionBarStyle">@style/ContactPickerTheme.ActionBarStyle</item-->
 
-
-        <item name="android:textColorPrimary">#FF7474</item>
-
-        <item name ="actionBarStyle">@style/ActionBarStyle</item>
+        <item name="actionModeStyle">@style/ContactPickerTheme.ActionMode</item>
 
     </style>
 
-    <style name="ActionBarStyle" parent="@style/Base.Widget.AppCompat.ActionBar">
-        <item name="contentInsetStart">0dp</item>
-        <item name="contentInsetEnd">0dp</item>
+    <style name="ContactPickerTheme.ActionBarStyle" parent="@style/Base.Widget.AppCompat.ActionBar">
+        <item name="background">@drawable/actionbar_bg</item>
+        <item name="titleTextStyle">@style/ContactPickerTheme.ActionMode.ActionBarTextStyle</item>
+
     </style>
+
+    <style name="ContactPickerTheme.ActionMode" parent="@style/Base.Widget.AppCompat.ActionMode">
+        <item name="background">@drawable/actionbar_bg</item>
+        <item name="backgroundSplit">?attr/actionModeSplitBackground</item>
+        <item name="height">?attr/actionBarSize</item>
+        <item name="titleTextStyle">@style/ContactPickerTheme.ActionMode.ActionBarTextStyle</item>
+        <item name="subtitleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle</item>
+        <item name="closeItemLayout">@layout/ab_close_btn_layout</item>
+    </style>
+
+    <style name="ContactPickerTheme.ActionMode.ActionBarTextStyle" parent = "@style/TextAppearance.AppCompat.Widget.ActionMode.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#FF7474</item>
+
+    </style>
+
 
 
 </resources>
+
+

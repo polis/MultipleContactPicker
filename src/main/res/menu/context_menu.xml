@@ -1,26 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_lock"
+    <item android:id="@+id/menu_ok"
         android:orderInCategory="2"
-        android:icon="@drawable/ic_lock"
-        android:title="@string/lock"
+        android:icon="@drawable/button_ab_ok"
+        android:title="@string/ok"
         app:showAsAction="always"
-        />
-    <item android:id="@+id/menu_share"
-        android:orderInCategory="3"
-        android:icon="@drawable/ic_share"
-        android:title="@string/share"
-        app:showAsAction="always"
-        />
-    <item android:id="@+id/menu_delete"
-        android:orderInCategory="4"
-        android:icon="@drawable/ic_delete"
-        android:title="@string/delete"
-        app:showAsAction="always"
-        />
-    <item android:id="@+id/menu_select_all"
-        android:orderInCategory="5"
-        android:title="@string/select_all"
-        app:showAsAction="never"
         />
 </menu>
