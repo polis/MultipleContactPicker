@@ -1,6 +1,8 @@
 # MultipleContactPicker
 Android library for multiple contact selection
 
+Screenshots https://github.com/polis/MultipleContactPicker/wiki
+
 Steps to use:
 
 1. Add it as an android lybrary to your project
